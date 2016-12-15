@@ -1,8 +1,8 @@
 []() MG5_aMCatNLO grid pack submissions scripts
 ================================================
 
-**For a relatively simple process (LO+0/1/2 matched partons) the master job can be sent locally. Daughter jobs are sent to the cluster automatically.
-This requires the user to stay logged in the same machine for the duration of the job**.
+**For a relatively simple process (LO+0/1/2 matched partons) the master job can be sent locally**. Daughter jobs are sent to the cluster automatically.
+This requires the user to stay logged in the same machine for the duration of the job.
 
 On an lxplus machine, type do the following:
 
