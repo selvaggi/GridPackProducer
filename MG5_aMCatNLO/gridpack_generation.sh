@@ -579,7 +579,7 @@ else
     tar -czvf ${name}.tar.gz mgbasedir process gridpack_generation.log external_tarball ${name}_externaltarball.dat header_for_madspin.txt
 fi
 
-mv ${name}_tarball.tar.gz ${PRODHOME}/${name}_tarball.tar.gz
+mv ${name}.tar.gz ${PRODHOME}/${name}.tar.gz
 
 echo "Gridpack created successfully at ${PRODHOME}/${name}_tarball.tar.gz"
 echo "End of job"
