@@ -141,7 +141,7 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   tar xzf ${LHAPDF}
   cd ${LHAPDFBASEDIRORIG}
 
-  ./configure --prefix=${PWD}/install --with-boost=${BOOSTDIR} --enable-static CXXFLAGS="-static-libstdc++"
+  ./configure --prefix=${PWD}/install --with-boost=${BOOSTDIR}
   make -j 12 && make -j 12 install
 
   LHAPDFCONFIG=${PWD}/install/bin/lhapdf-config
@@ -198,14 +198,14 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   ./bin/mg5_aMC mgconfigscript
 
   #get syscalc and compile
-#  wget --no-check-certificate ${SYSCALCSOURCE}
-#  tar xzf ${SYSCALC}
-#  rm $SYSCALC
+  wget --no-check-certificate ${SYSCALCSOURCE}
+  tar xzf ${SYSCALC}
+  rm $SYSCALC
 
-#  cd SysCalc
-#  sed -i "s#INCLUDES = -I../include#INCLUDES = -I../include -I${BOOSTINCLUDES}#g" src/Makefile  
-#  PATH=`${LHAPDFCONFIG} --prefix`/bin:${PATH} make
-#  cd ..
+  cd SysCalc
+  sed -i "s#INCLUDES = -I../include#INCLUDES = -I../include -I${BOOSTINCLUDES}#g" src/Makefile
+  PATH=`${LHAPDFCONFIG} --prefix`/bin:${PATH} make
+  cd ..
   
   #load extra models if needed
   if [ -e $CARDSDIR/${name}_extramodels.dat ]; then
