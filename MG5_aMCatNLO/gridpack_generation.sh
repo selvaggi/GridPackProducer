@@ -207,6 +207,13 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   PATH=`${LHAPDFCONFIG} --prefix`/bin:${PATH} make
   cd ..
   
+
+  ####################################
+  # Access extra BSM models if needed
+  ####################################
+  
+  MODELSDIR=${PRODHOME}/models
+
   #load extra models if needed
   if [ -e $CARDSDIR/${name}_extramodels.dat ]; then
     echo "Loading extra models specified in $CARDSDIR/${name}_extramodels.dat"
@@ -215,19 +222,26 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
     do
       #get needed BSM model
       if [[ $model = *[!\ ]* ]]; then
-        echo "Loading extra model $model"
-        wget --no-check-certificate https://cms-project-generators.web.cern.ch/cms-project-generators/$model	
-        cd models
-        if [[ $model == *".zip"* ]]; then
-          unzip ../$model
-        elif [[ $model == *".tgz"* ]]; then
-          tar zxvf ../$model
-        elif [[ $model == *".tar"* ]]; then
-          tar xavf ../$model
-        else 
-          echo "A BSM model is specified but it is not in a standard archive (.zip or .tar)"
+        echo ${MODELSDIR}/${model}
+        if [[ -e ${MODELSDIR}/${model} ]]; then
+          echo "Loading extra model $model"
+          cp ${MODELSDIR}/${model} .
+          cd models
+          if [[ $model == *".zip"* ]]; then
+            unzip ../$model
+          elif [[ $model == *".tgz"* ]]; then
+            tar zxvf ../$model
+          elif [[ $model == *".tar"* ]]; then
+            tar xavf ../$model
+          else 
+            echo "A BSM model is specified but it is not in a standard archive (.zip or .tar)"
+          fi
+          cd ..
+        else
+          echo "BSM model specified in $CARDSDIR/${name}_extramodels.dat does not match any model in extramodels
+          directory."
+          if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi
         fi
-        cd ..
       fi
     done
   fi
@@ -301,18 +315,6 @@ else
     if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi
   fi
   cd $WORKDIR
-
-#  eval `scram runtime -sh`
-
-  #LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"`
-  
-  #if lhapdf6 external is available then above points to lhapdf5 and needs to be overridden
-#  LHAPDF6TOOLFILE=$CMSSW_BASE/config/toolbox/$SCRAM_ARCH/tools/available/lhapdf6.xml
-#  if [ -e $LHAPDF6TOOLFILE ]; then
-#    LHAPDFCONFIG=`cat $LHAPDF6TOOLFILE | grep "<environment name=\"LHAPDF6_BASE\"" | cut -d \" -f 4`/bin/lhapdf-config
-#  else
-#    LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"`
-#  fi
 
 
   if [ "$name" == "interactive" ]; then
@@ -572,9 +574,9 @@ cp ${LOGFILE} ./gridpack_generation.log
 echo "Creating tarball"
 
 if [ ! -e $CARDSDIR/${name}_externaltarball.dat ]; then
-    tar -czvf ${name}_tarball.tar.gz mgbasedir process gridpack_generation.log
+    tar -czvf ${name}.tar.gz mgbasedir process gridpack_generation.log
 else
-    tar -czvf ${name}_tarball.tar.gz mgbasedir process gridpack_generation.log external_tarball ${name}_externaltarball.dat header_for_madspin.txt
+    tar -czvf ${name}.tar.gz mgbasedir process gridpack_generation.log external_tarball ${name}_externaltarball.dat header_for_madspin.txt
 fi
 
 mv ${name}_tarball.tar.gz ${PRODHOME}/${name}_tarball.tar.gz
