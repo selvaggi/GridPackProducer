@@ -581,7 +581,7 @@ fi
 
 mv ${name}.tar.gz ${PRODHOME}/${name}.tar.gz
 
-echo "Gridpack created successfully at ${PRODHOME}/${name}_tarball.tar.gz"
+echo "Gridpack created successfully at ${PRODHOME}/${name}.tar.gz"
 echo "End of job"
 
 if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 0; else exit 0; fi
