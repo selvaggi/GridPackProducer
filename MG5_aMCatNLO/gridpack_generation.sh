@@ -135,7 +135,7 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   LHAPDFSOURCE=http://www.hepforge.org/archive/lhapdf/$LHAPDF
   LHAPDFBASEDIRORIG=LHAPDF-6.1.6
   BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt
-  BOOSTINCLUDES=/afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt/include/boost-1_62/boost/
+  BOOSTINCLUDES=${BOOSTDIR}/include/boost-1_62/
 
   wget --no-check-certificate ${LHAPDFSOURCE}
   tar xzf ${LHAPDF}
