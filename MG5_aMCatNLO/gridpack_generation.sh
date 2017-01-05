@@ -19,7 +19,9 @@
 #If QUEUE_SELECTION is omitted, then run on local machine only (using multiple cores)    #
 ##########################################################################################
 
-source /afs/cern.ch/sw/lcg/releases/LCG_80/gcc/4.9.3/x86_64-slc6/setup.sh
+#source /afs/cern.ch/sw/lcg/releases/LCG_80/gcc/4.9.3/x86_64-slc6/setup.sh
+source /afs/cern.ch/sw/lcg/releases/LCG_86/gcc/4.9.3/x86_64-slc6/setup.sh
+source /afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt/Boost-env.sh
 
 #exit on first error
 set -e
@@ -85,15 +87,13 @@ CARDSDIR=${PRODHOME}/${carddir}
 
 MGBASEDIR=mgbasedir
 
-MG=MG5_aMC_v2.5.1.tar.gz
+MG=MG5_aMC_v2.5.2.tar.gz
 MGSOURCE=https://launchpad.net/mg5amcnlo/2.0/2.5.x/+download/$MG
-MGSOURCE_ALT=${PRODHOME}/code_tars/$MG
-
 #syscalc is a helper tool for madgraph to add scale and pdf variation weights for LO processes
 SYSCALC=SysCalc_V1.1.6.tar.gz
 SYSCALCSOURCE=https://cms-project-generators.web.cern.ch/cms-project-generators/$SYSCALC
 
-MGBASEDIRORIG=MG5_aMC_v2_5_1
+MGBASEDIRORIG=MG5_aMC_v2_5_2
 
 isscratchspace=0
 
@@ -134,15 +134,19 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   LHAPDF=LHAPDF-6.1.6.tar.gz
   LHAPDFSOURCE=http://www.hepforge.org/archive/lhapdf/$LHAPDF
   LHAPDFBASEDIRORIG=LHAPDF-6.1.6
-  BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt
-  BOOSTINCLUDES=${BOOSTDIR}/include/boost-1_62/
+#  BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt
+#  BOOSTINCLUDES=$BOOSTDIR/include/boost-1_59/
+  BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt
+  BOOSTINCLUDES=$BOOSTDIR/include/boost-1_62/
 
   wget --no-check-certificate ${LHAPDFSOURCE}
   tar xzf ${LHAPDF}
   cd ${LHAPDFBASEDIRORIG}
 
-  ./configure --prefix=${PWD}/install --with-boost=${BOOSTDIR}
+  ./configure CXXFLAGS="-static-libstdc++" --prefix=${PWD}/install --with-boost=${BOOSTDIR}
   make -j 12 && make -j 12 install
+  
+  #LIBRARY_PATH=$LD_LIBRARY_PATH ./configure CXXFLAGS="-static-libstdc++" --prefix=$LOCAL --bindir=$LOCAL/bin --datadir=$LOCAL/share --libdir=$LOCAL/lib --with-boost=$BOOST --enable-static
 
   LHAPDFCONFIG=${PWD}/install/bin/lhapdf-config
 
@@ -461,6 +465,9 @@ else
   #######################
   #Run the integration and generate the grid
   #######################
+  
+  #need to patch makefile in SubProcesses 
+  sed -i -- 's#-lpdf $(LDFLAGS)#-lpdf $(LDFLAGS) -lLHAPDF#g' SubProcesses/P*/makefile
 
   echo "done" > makegrid.dat
   echo "set gridpack True" >> makegrid.dat
