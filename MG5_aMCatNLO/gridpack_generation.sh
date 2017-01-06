@@ -19,9 +19,11 @@
 #If QUEUE_SELECTION is omitted, then run on local machine only (using multiple cores)    #
 ##########################################################################################
 
-#source /afs/cern.ch/sw/lcg/releases/LCG_80/gcc/4.9.3/x86_64-slc6/setup.sh
-source /afs/cern.ch/sw/lcg/releases/LCG_86/gcc/4.9.3/x86_64-slc6/setup.sh
-source /afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt/Boost-env.sh
+#source /afs/cern.ch/sw/lcg/releases/LCG_86/gcc/4.9.3/x86_64-slc6/setup.sh
+#source /afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt/Boost-env.sh
+
+source /afs/cern.ch/sw/lcg/releases/LCG_80/gcc/4.9.3/x86_64-slc6/setup.sh
+source /afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt/Boost-env.sh
 
 #exit on first error
 set -e
@@ -79,8 +81,8 @@ AFSFOLD=${PRODHOME}/${name}
 # the folder where the script works, I guess
 AFS_GEN_FOLDER=${RUNHOME}/${name}
 # where to search for datacards, that have to follow a naming code: 
-#   ${name}_proc_card_mg5.dat
-#   ${name}_run_card.dat
+#   proc_card_mg5.dat
+#   run_card.dat
 CARDSDIR=${PRODHOME}/${carddir}
 # where to find the madgraph tarred distribution
 
@@ -134,10 +136,10 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   LHAPDF=LHAPDF-6.1.6.tar.gz
   LHAPDFSOURCE=http://www.hepforge.org/archive/lhapdf/$LHAPDF
   LHAPDFBASEDIRORIG=LHAPDF-6.1.6
-#  BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt
-#  BOOSTINCLUDES=$BOOSTDIR/include/boost-1_59/
-  BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt
-  BOOSTINCLUDES=$BOOSTDIR/include/boost-1_62/
+  #BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt
+  BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt
+  #BOOSTINCLUDES=$BOOSTDIR/include/boost-1_62/
+  BOOSTINCLUDES=$BOOSTDIR/include/boost-1_59/
 
   wget --no-check-certificate ${LHAPDFSOURCE}
   tar xzf ${LHAPDF}
@@ -219,10 +221,10 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   MODELSDIR=${PRODHOME}/models
 
   #load extra models if needed
-  if [ -e $CARDSDIR/${name}_extramodels.dat ]; then
-    echo "Loading extra models specified in $CARDSDIR/${name}_extramodels.dat"
+  if [ -e $CARDSDIR/extramodels.dat ]; then
+    echo "Loading extra models specified in $CARDSDIR/extramodels.dat"
     #strip comments
-    sed 's:#.*$::g' $CARDSDIR/${name}_extramodels.dat | while read model
+    sed 's:#.*$::g' $CARDSDIR/extramodels.dat | while read model
     do
       #get needed BSM model
       if [[ $model = *[!\ ]* ]]; then
@@ -242,7 +244,7 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
           fi
           cd ..
         else
-          echo "BSM model specified in $CARDSDIR/${name}_extramodels.dat does not match any model in extramodels
+          echo "BSM model specified in $CARDSDIR/extramodels.dat does not match any model in extramodels
           directory."
           if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi
         fi
@@ -274,24 +276,25 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   ########################
   #Locating the proc card#
   ########################
-  if [ ! -e $CARDSDIR/${name}_proc_card.dat ]; then
-    echo $CARDSDIR/${name}_proc_card.dat " does not exist!"
+  if [ ! -e $CARDSDIR/proc_card.dat ]; then
+    echo $CARDSDIR/proc_card.dat " does not exist!"
     if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi
   fi
 
-  if [ ! -e $CARDSDIR/${name}_run_card.dat ]; then
-    echo $CARDSDIR/${name}_run_card.dat " does not exist!"
+  if [ ! -e $CARDSDIR/run_card.dat ]; then
+    echo $CARDSDIR/run_card.dat " does not exist!"
     if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi
   fi  
   
-  cp $CARDSDIR/${name}_proc_card.dat ${name}_proc_card.dat
-  
+  cp $CARDSDIR/proc_card.dat proc_card.dat
+  echo "output ${name}" >> proc_card.dat
+
 
   ########################
   #Run the code-generation step to create the process directory
   ########################
 
-  ./$MGBASEDIRORIG/bin/mg5_aMC ${name}_proc_card.dat
+  ./$MGBASEDIRORIG/bin/mg5_aMC proc_card.dat
 
   #*FIXME* workaround for broken set cluster_queue handling (only needed for LSF)
   if [ "$queue" != "condor" ]; then
@@ -302,9 +305,9 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   fi
 #   echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt    
   
-  if [ -e $CARDSDIR/${name}_patch_me.sh ]; then
-      echo "Patching generated matrix element code with " $CARDSDIR/${name}_patch_me.sh
-      /bin/bash "$CARDSDIR/${name}_patch_me.sh" "$WORKDIR/$MGBASEDIRORIG"
+  if [ -e $CARDSDIR/patch_me.sh ]; then
+      echo "Patching generated matrix element code with " $CARDSDIR/patch_me.sh
+      /bin/bash "$CARDSDIR/patch_me.sh" "$WORKDIR/$MGBASEDIRORIG"
   fi;
   
 else  
@@ -340,8 +343,8 @@ else
     if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi
   fi
   
-  if [ ! -e $CARDSDIR/${name}_run_card.dat ]; then
-    echo $CARDSDIR/${name}_run_card.dat " does not exist!"
+  if [ ! -e $CARDSDIR/run_card.dat ]; then
+    echo $CARDSDIR/run_card.dat " does not exist!"
     if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi
   fi  
 
@@ -380,32 +383,32 @@ cd processtmp
 #######################
 
 echo "copying run_card.dat file"
-cp $CARDSDIR/${name}_run_card.dat ./Cards/run_card.dat
+cp $CARDSDIR/run_card.dat ./Cards/run_card.dat
 
 #copy provided custom fks params or cuts
-if [ -e $CARDSDIR/${name}_cuts.f ]; then
+if [ -e $CARDSDIR/cuts.f ]; then
   echo "copying custom cuts.f file"
-  cp $CARDSDIR/${name}_cuts.f ./SubProcesses/cuts.f
+  cp $CARDSDIR/cuts.f ./SubProcesses/cuts.f
 fi
 
-if [ -e $CARDSDIR/${name}_FKS_params.dat ]; then
+if [ -e $CARDSDIR/FKS_params.dat ]; then
   echo "copying custom FKS_params.dat file"
-  cp $CARDSDIR/${name}_FKS_params.dat ./Cards/FKS_params.dat
+  cp $CARDSDIR/FKS_params.dat ./Cards/FKS_params.dat
 fi
 
-if [ -e $CARDSDIR/${name}_setscales.f ]; then
+if [ -e $CARDSDIR/setscales.f ]; then
   echo "copying custom setscales.f file"
-  cp $CARDSDIR/${name}_setscales.f ./SubProcesses/setscales.f
+  cp $CARDSDIR/setscales.f ./SubProcesses/setscales.f
 fi
 
-if [ -e $CARDSDIR/${name}_reweight_xsec.f ]; then
+if [ -e $CARDSDIR/reweight_xsec.f ]; then
   echo "copying custom reweight_xsec.f file"
-  cp $CARDSDIR/${name}_reweight_xsec.f ./SubProcesses/reweight_xsec.f
+  cp $CARDSDIR/reweight_xsec.f ./SubProcesses/reweight_xsec.f
 fi
 
-if [ -e $CARDSDIR/${name}_reweight_card.dat ]; then
+if [ -e $CARDSDIR/reweight_card.dat ]; then
   echo "copying custom reweight file"
-  cp $CARDSDIR/${name}_reweight_card.dat ./Cards/reweight_card.dat
+  cp $CARDSDIR/reweight_card.dat ./Cards/reweight_card.dat
 fi
 
 
@@ -421,21 +424,21 @@ if [ "$isnlo" -gt "0" ]; then
   #Run the integration and generate the grid
   #######################
 
-  if [ -e $CARDSDIR/${name}_madspin_card.dat ]; then
-    cp $CARDSDIR/${name}_madspin_card.dat ./Cards/madspin_card.dat
+  if [ -e $CARDSDIR/madspin_card.dat ]; then
+    cp $CARDSDIR/madspin_card.dat ./Cards/madspin_card.dat
   fi
   
   echo "shower=OFF" > makegrid.dat
   echo "done" >> makegrid.dat
-  if [ -e $CARDSDIR/${name}_customizecards.dat ]; then
-          cat $CARDSDIR/${name}_customizecards.dat >> makegrid.dat
+  if [ -e $CARDSDIR/customizecards.dat ]; then
+          cat $CARDSDIR/customizecards.dat >> makegrid.dat
           echo "" >> makegrid.dat
   fi
   echo "done" >> makegrid.dat
 
   cat makegrid.dat | ./bin/generate_events -n pilotrun
 
-  if [ -e $CARDSDIR/${name}_externaltarball.dat ]; then
+  if [ -e $CARDSDIR/externaltarball.dat ]; then
       gunzip ./Events/pilotrun_decayed_1/events.lhe.gz
       sed -n '/<MG5ProcCard>/,/<\/slha>/p' ./Events/pilotrun_decayed_1/events.lhe > header_for_madspin.txt
       mv header_for_madspin.txt $WORKDIR
@@ -456,7 +459,7 @@ if [ "$isnlo" -gt "0" ]; then
   
   cd gridpack
   
-  if [ -e $CARDSDIR/${name}_externaltarball.dat ]; then
+  if [ -e $CARDSDIR/externaltarball.dat ]; then
     mv $WORKDIR/header_for_madspin.txt . 
   fi
   
@@ -471,8 +474,8 @@ else
 
   echo "done" > makegrid.dat
   echo "set gridpack True" >> makegrid.dat
-  if [ -e $CARDSDIR/${name}_customizecards.dat ]; then
-          cat $CARDSDIR/${name}_customizecards.dat >> makegrid.dat
+  if [ -e $CARDSDIR/customizecards.dat ]; then
+          cat $CARDSDIR/customizecards.dat >> makegrid.dat
           echo "" >> makegrid.dat
   fi
   echo "done" >> makegrid.dat
@@ -481,15 +484,7 @@ else
   cat makegrid.dat | ./bin/generate_events pilotrun
 
   cd $WORKDIR
-  
-#   echo "creating debug tarball"
-#   cp ${LOGFILE} ./gridpack_generation.log
-#   DEBUGTARBALL=${name}_debug_tarball.tar.gz
-#   tar -czps --ignore-failed-read -f ${DEBUGTARBALL} processtmp gridpack_generation.log
-#   echo "moving tarball to ${PRODHOME}/${DEBUGTARBALL}"
-#   mv ${DEBUGTARBALL} ${PRODHOME}/${DEBUGTARBALL}
-#   set -e
-  
+    
   echo "cleaning temporary output"
   mv $WORKDIR/processtmp/pilotrun_gridpack.tar.gz $WORKDIR/
   mv $WORKDIR/processtmp/Events/pilotrun/unweighted_events.lhe.gz $WORKDIR/
@@ -502,7 +497,7 @@ else
   rm $WORKDIR/pilotrun_gridpack.tar.gz
   
   # precompile reweighting if necessary
-  if [ -e $CARDSDIR/${name}_reweight_card.dat ]; then
+  if [ -e $CARDSDIR/reweight_card.dat ]; then
       pwd
       echo "preparing reweighting step"
       mkdir -p madevent/Events/pilotrun
@@ -526,13 +521,13 @@ else
   fi
   
   #prepare madspin grids if necessary
-  if [ -e $CARDSDIR/${name}_madspin_card.dat ]; then
+  if [ -e $CARDSDIR/madspin_card.dat ]; then
     echo "import $WORKDIR/unweighted_events.lhe.gz" > madspinrun.dat
-    cat $CARDSDIR/${name}_madspin_card.dat >> madspinrun.dat
+    cat $CARDSDIR/madspin_card.dat >> madspinrun.dat
     cat madspinrun.dat | $WORKDIR/$MGBASEDIRORIG/MadSpin/madspin
     rm madspinrun.dat
     rm -rf tmp*
-    cp $CARDSDIR/${name}_madspin_card.dat $WORKDIR/process/madspin_card.dat
+    cp $CARDSDIR/madspin_card.dat $WORKDIR/process/madspin_card.dat
   fi
 
   echo "preparing final gridpack"
@@ -559,10 +554,10 @@ $PRODHOME/cleangridpack.sh
 #Plan to decay events from external tarball?
 # 
 
-if [ -e $CARDSDIR/${name}_externaltarball.dat ]; then
+if [ -e $CARDSDIR/externaltarball.dat ]; then
     echo "Locating the external tarball"
-    cp $CARDSDIR/${name}_externaltarball.dat .
-    source $CARDSDIR/${name}_externaltarball.dat
+    cp $CARDSDIR/externaltarball.dat .
+    source $CARDSDIR/externaltarball.dat
     echo $EXTERNAL_TARBALL 
     cp $EXTERNAL_TARBALL .
     tarname=$(basename $EXTERNAL_TARBALL)
@@ -580,7 +575,7 @@ cp ${LOGFILE} ./gridpack_generation.log
 
 echo "Creating tarball"
 
-if [ ! -e $CARDSDIR/${name}_externaltarball.dat ]; then
+if [ ! -e $CARDSDIR/externaltarball.dat ]; then
     tar -czvf ${name}.tar.gz mgbasedir process gridpack_generation.log
 else
     tar -czvf ${name}.tar.gz mgbasedir process gridpack_generation.log external_tarball ${name}_externaltarball.dat header_for_madspin.txt
