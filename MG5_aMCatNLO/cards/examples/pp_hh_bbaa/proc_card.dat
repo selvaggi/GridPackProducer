@@ -36,4 +36,3 @@ define vl = ve vm vt
 define vl~ = ve~ vm~ vt~
 import model BSM_gg_hh
 generate p p > h h ,  h > a a , h > b b~
-output pp_hh_bbaa
