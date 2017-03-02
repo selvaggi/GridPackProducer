@@ -143,26 +143,10 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   wget https://raw.githubusercontent.com/selvaggi/GridPackProducer/master/MG5_aMCatNLO/patches/lhapdfFlags/makefile
   mv makefile Template/LO/SubProcesses/
   
-  #LHAPDFCONFIG=/cvmfs/sft.cern.ch/lcg/releases/LCG_87/MCGenerators/lhapdf/6.1.6/x86_64-slc6-gcc49-opt/bin/lhapdf-config
-  #LHAPDFCONFIG=/cvmfs/sft.cern.ch/lcg/releases/LCG_80/MCGenerators/lhapdf/6.1.5/x86_64-slc6-gcc49-opt/bin/lhapdf-config
   LHAPDFCONFIG=/cvmfs/sft.cern.ch/lcg/releases/LCG_86/MCGenerators/lhapdf/6.1.6/x86_64-slc6-gcc49-opt/bin/lhapdf-config
-  #LHAPDFCONFIG=/cvmfs/sft.cern.ch/lcg/releases/LCG_86/MCGenerators/lhapdf/6.1.6.cxxstd/x86_64-slc6-gcc49-opt/bin/lhapdf-config
-  #LHAPDFCONFIG=/afs/cern.ch/work/s/selvaggi/private/MG5_aMC_v2_5_2/HEPTools/lhapdf6/bin/lhapdf-config
   
   #make sure env variable forexit pdfsets points to the right place
-  #export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/:/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
-  #export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
-  #export LHAPDF_DATA_PATH=`$LHAPDFCONFIG --datadir`:$LHAPDF_DATA_PATH
-  
-  export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/releases/LCG_87/MCGenerators/lhapdf/6.1.6/x86_64-slc6-gcc49-opt/share/LHAPDF:/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
-  #export LHAPDF_DATA_PATH=/afs/cern.ch/work/s/selvaggi/private/GridPackProducer/MG5_aMCatNLO/lhapdf_test
-  #export LHAPDF_DATA_PATH=/afs/cern.ch/work/s/selvaggi/private/GridPackProducer/MG5_aMCatNLO/lhapdf_test:/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
-  
-  #LHAPDF_DATA_PATH=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/lhapdf/6.1.5/share/LHAPDF/
-  #LHAPDFCONFIG=$LHAPDF_DATA_PATH/../../bin/lhapdf-config
-
-  #LHAPDFCONFIG=/cvmfs/cms.cern.ch/slc6_amd64_gcc493/external/lhapdf/6.1.6/bin/lhapdf-config
-  #export LHAPDF_DATA_PATH= /cvmfs/cms.cern.ch/slc6_amd64_gcc493/external/lhapdf/6.1.6/share/LHAPDF
+  export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/:/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
 
   echo "set auto_update 0" > mgconfigscript
   echo "set automatic_html_opening False" >> mgconfigscript
