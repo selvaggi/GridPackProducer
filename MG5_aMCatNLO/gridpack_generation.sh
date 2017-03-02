@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 ##########################################################################################
@@ -19,11 +20,14 @@
 #If QUEUE_SELECTION is omitted, then run on local machine only (using multiple cores)    #
 ##########################################################################################
 
-#source /afs/cern.ch/sw/lcg/releases/LCG_86/gcc/4.9.3/x86_64-slc6/setup.sh
+source /afs/cern.ch/sw/lcg/releases/LCG_86/gcc/4.9.3/x86_64-slc6/setup.sh
 #source /afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt/Boost-env.sh
 
-source /afs/cern.ch/sw/lcg/releases/LCG_80/gcc/4.9.3/x86_64-slc6/setup.sh
-source /afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt/Boost-env.sh
+#source /afs/cern.ch/sw/lcg/releases/LCG_80/gcc/4.9.3/x86_64-slc6/setup.sh
+#source /afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt/Boost-env.sh
+
+#source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/gcc/4.9.3/x86_64-slc6/setup.sh
+#source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/Boost/1.62.0/x86_64-slc6-gcc49-opt/Boost-env.sh
 
 #exit on first error
 set -e
@@ -129,43 +133,37 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   tar xzf ${MG}
   rm $MG
 
-  ###############################
-  # Download and install LHAPDF
-  ###############################
-
-  LHAPDF=LHAPDF-6.1.6.tar.gz
-  LHAPDFSOURCE=http://www.hepforge.org/archive/lhapdf/$LHAPDF
-  LHAPDFBASEDIRORIG=LHAPDF-6.1.6
-  #BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt
-  BOOSTDIR=/afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt
-  #BOOSTINCLUDES=$BOOSTDIR/include/boost-1_62/
-  BOOSTINCLUDES=$BOOSTDIR/include/boost-1_59/
-
-  wget --no-check-certificate ${LHAPDFSOURCE}
-  tar xzf ${LHAPDF}
-  cd ${LHAPDFBASEDIRORIG}
-
-  ./configure CXXFLAGS="-static-libstdc++" --prefix=${PWD}/install --with-boost=${BOOSTDIR}
-  make -j 12 && make -j 12 install
-  
-  #LIBRARY_PATH=$LD_LIBRARY_PATH ./configure CXXFLAGS="-static-libstdc++" --prefix=$LOCAL --bindir=$LOCAL/bin --datadir=$LOCAL/share --libdir=$LOCAL/lib --with-boost=$BOOST --enable-static
-
-  LHAPDFCONFIG=${PWD}/install/bin/lhapdf-config
-
-  echo $LHAPDFCONFIG
-  
-  #make sure env variable for pdfsets points to the right place
-  export LHAPDF_DATA_PATH=`$LHAPDFCONFIG --datadir`  
-  LHAPDFINCLUDES=`$LHAPDFCONFIG --incdir`
-  LHAPDFLIBS=`$LHAPDFCONFIG --libdir`
-
-
   ################################
   # Prepare MG input parameters 
   ################################
   
-  cd ../$MGBASEDIRORIG
+  cd $MGBASEDIRORIG
   
+  ### need to patch makefile in SubProcesses ###
+  wget https://raw.githubusercontent.com/selvaggi/GridPackProducer/master/MG5_aMCatNLO/patches/lhapdfFlags/makefile
+  mv makefile Template/LO/SubProcesses/
+  
+  #LHAPDFCONFIG=/cvmfs/sft.cern.ch/lcg/releases/LCG_87/MCGenerators/lhapdf/6.1.6/x86_64-slc6-gcc49-opt/bin/lhapdf-config
+  #LHAPDFCONFIG=/cvmfs/sft.cern.ch/lcg/releases/LCG_80/MCGenerators/lhapdf/6.1.5/x86_64-slc6-gcc49-opt/bin/lhapdf-config
+  LHAPDFCONFIG=/cvmfs/sft.cern.ch/lcg/releases/LCG_86/MCGenerators/lhapdf/6.1.6/x86_64-slc6-gcc49-opt/bin/lhapdf-config
+  #LHAPDFCONFIG=/cvmfs/sft.cern.ch/lcg/releases/LCG_86/MCGenerators/lhapdf/6.1.6.cxxstd/x86_64-slc6-gcc49-opt/bin/lhapdf-config
+  #LHAPDFCONFIG=/afs/cern.ch/work/s/selvaggi/private/MG5_aMC_v2_5_2/HEPTools/lhapdf6/bin/lhapdf-config
+  
+  #make sure env variable forexit pdfsets points to the right place
+  #export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/:/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
+  #export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
+  #export LHAPDF_DATA_PATH=`$LHAPDFCONFIG --datadir`:$LHAPDF_DATA_PATH
+  
+  export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/releases/LCG_87/MCGenerators/lhapdf/6.1.6/x86_64-slc6-gcc49-opt/share/LHAPDF:/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
+  #export LHAPDF_DATA_PATH=/afs/cern.ch/work/s/selvaggi/private/GridPackProducer/MG5_aMCatNLO/lhapdf_test
+  #export LHAPDF_DATA_PATH=/afs/cern.ch/work/s/selvaggi/private/GridPackProducer/MG5_aMCatNLO/lhapdf_test:/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
+  
+  #LHAPDF_DATA_PATH=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/lhapdf/6.1.5/share/LHAPDF/
+  #LHAPDFCONFIG=$LHAPDF_DATA_PATH/../../bin/lhapdf-config
+
+  #LHAPDFCONFIG=/cvmfs/cms.cern.ch/slc6_amd64_gcc493/external/lhapdf/6.1.6/bin/lhapdf-config
+  #export LHAPDF_DATA_PATH= /cvmfs/cms.cern.ch/slc6_amd64_gcc493/external/lhapdf/6.1.6/share/LHAPDF
+
   echo "set auto_update 0" > mgconfigscript
   echo "set automatic_html_opening False" >> mgconfigscript
 #  echo "set output_dependencies internal" >> mgconfigscript
@@ -189,6 +187,8 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
       echo "set cluster_status_update 60 30" >> mgconfigscript
       echo "set cluster_nb_retry 3" >> mgconfigscript
       echo "set cluster_retry_wait 300" >> mgconfigscript 
+      echo "display options" >> mgconfigscript 
+      
       #echo "set cluster_local_path `${LHAPDFCONFIG} --datadir`" >> mgconfigscript 
       if [[ ! "$RUNHOME" =~ ^/afs/.* ]]; then
           echo "local path is not an afs path, batch jobs will use worker node scratch space instead of afs"
@@ -202,17 +202,6 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   echo "save options" >> mgconfigscript
 
   ./bin/mg5_aMC mgconfigscript
-
-  #get syscalc and compile
-  wget --no-check-certificate ${SYSCALCSOURCE}
-  tar xzf ${SYSCALC}
-  rm $SYSCALC
-
-  cd SysCalc
-  sed -i "s#INCLUDES = -I../include#INCLUDES = -I../include -I${BOOSTINCLUDES}#g" src/Makefile
-  PATH=`${LHAPDFCONFIG} --prefix`/bin:${PATH} make
-  cd ..
-  
 
   ####################################
   # Access extra BSM models if needed
@@ -469,9 +458,6 @@ else
   #Run the integration and generate the grid
   #######################
   
-  #need to patch makefile in SubProcesses 
-  sed -i -- 's#-lpdf $(LDFLAGS)#-lpdf $(LDFLAGS) -lLHAPDF#g' SubProcesses/P*/makefile
-
   echo "done" > makegrid.dat
   echo "set gridpack True" >> makegrid.dat
   if [ -e $CARDSDIR/customizecards.dat ]; then
