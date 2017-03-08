@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 ##########################################################################################
@@ -20,14 +19,7 @@
 #If QUEUE_SELECTION is omitted, then run on local machine only (using multiple cores)    #
 ##########################################################################################
 
-source /afs/cern.ch/sw/lcg/releases/LCG_86/gcc/4.9.3/x86_64-slc6/setup.sh
-#source /afs/cern.ch/sw/lcg/releases/LCG_86/Boost/1.62.0/x86_64-slc6-gcc49-opt/Boost-env.sh
-
-#source /afs/cern.ch/sw/lcg/releases/LCG_80/gcc/4.9.3/x86_64-slc6/setup.sh
-#source /afs/cern.ch/sw/lcg/releases/LCG_80/Boost/1.59.0_python2.7/x86_64-slc6-gcc49-opt/Boost-env.sh
-
-#source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/gcc/4.9.3/x86_64-slc6/setup.sh
-#source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/Boost/1.62.0/x86_64-slc6-gcc49-opt/Boost-env.sh
+source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/gcc/4.9.3/x86_64-slc6/setup.sh
 
 #exit on first error
 set -e
@@ -143,10 +135,10 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   wget https://raw.githubusercontent.com/selvaggi/GridPackProducer/master/MG5_aMCatNLO/patches/lhapdfFlags/makefile
   mv makefile Template/LO/SubProcesses/
   
-  LHAPDFCONFIG=/cvmfs/sft.cern.ch/lcg/releases/LCG_86/MCGenerators/lhapdf/6.1.6/x86_64-slc6-gcc49-opt/bin/lhapdf-config
-  
+  LHAPDFCONFIG=/afs/cern.ch/work/s/selvaggi/public/LHAPDF-6.1.6/build/bin/lhapdf-config
   #make sure env variable forexit pdfsets points to the right place
-  export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/:/cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.1.6-77fe6/x86_64-slc6-gcc49-opt/share/LHAPDF
+  #export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/
+  export LHAPDF_DATA_PATH=/afs/cern.ch/work/s/selvaggi/public/LHAPDF-6.1.6/build/share/LHAPDF
 
   echo "set auto_update 0" > mgconfigscript
   echo "set automatic_html_opening False" >> mgconfigscript
@@ -173,7 +165,7 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
       echo "set cluster_retry_wait 300" >> mgconfigscript 
       echo "display options" >> mgconfigscript 
       
-      #echo "set cluster_local_path `${LHAPDFCONFIG} --datadir`" >> mgconfigscript 
+      echo "set cluster_local_path $LHAPDF_DATA_PATH" >> mgconfigscript 
       if [[ ! "$RUNHOME" =~ ^/afs/.* ]]; then
           echo "local path is not an afs path, batch jobs will use worker node scratch space instead of afs"
           #*FIXME* broken in mg_amc 2.4.0
