@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 ##########################################################################################
@@ -132,9 +133,9 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   cd $MGBASEDIRORIG
   
   ### need to patch makefile in SubProcesses ###
-  wget https://raw.githubusercontent.com/selvaggi/GridPackProducer/master/MG5_aMCatNLO/patches/lhapdfFlags/makefile
-  mv makefile Template/LO/SubProcesses/
-  
+  #wget https://raw.githubusercontent.com/selvaggi/GridPackProducer/master/MG5_aMCatNLO/patches/lhapdfFlags/makefile
+  #mv makefile Template/LO/SubProcesses/
+  cp /afs/cern.ch/work/s/selvaggi/public/LHAPDF-6.1.6/build/makefile Template/LO/SubProcesses/
   LHAPDFCONFIG=/afs/cern.ch/work/s/selvaggi/public/LHAPDF-6.1.6/build/bin/lhapdf-config
   #make sure env variable forexit pdfsets points to the right place
   #export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/
