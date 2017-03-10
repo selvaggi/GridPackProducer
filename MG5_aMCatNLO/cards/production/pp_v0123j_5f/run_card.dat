@@ -150,11 +150,11 @@
  0.001 = drll    ! min distance between leptons 
  0.001 = draa    ! min distance between gammas 
  0.001 = drbj    ! min distance between b and jet 
- 0.001 = draj    ! min distance between gamma and jet 
+ 0.3   = draj    ! min distance between gamma and jet 
  0.001 = drjl    ! min distance between jet and lepton 
  0.001 = drab    ! min distance between gamma and b 
  0.001 = drbl    ! min distance between b and lepton 
- 0.001 = dral    ! min distance between gamma and lepton 
+ 0.3 = dral    ! min distance between gamma and lepton 
  -1.0  = drjjmax ! max distance between jets
  -1.0  = drbbmax ! max distance between b's
  -1.0  = drllmax ! max distance between leptons
