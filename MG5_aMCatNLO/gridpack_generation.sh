@@ -124,6 +124,15 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   #set -e
   tar xzf ${MG}
   rm $MG
+  
+  #############################################
+  #Apply any necessary patches on top of official release
+  #############################################
+
+  cp $PRODHOME/patches/mg5patches/mgfixes.patch .
+  sed -i 's/MG5_aMC_v2_3_3/${MGBASEDIRORIG}/g' mgfixes.patch
+  patch -l -p0 -i mgfixes.patch
+  patch -l -p0 -i $PRODHOME/patches/models.patch
 
   ################################
   # Prepare MG input parameters 
@@ -132,9 +141,9 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   cd $MGBASEDIRORIG
   
   ### need to patch makefile in SubProcesses ###
-  #wget https://raw.githubusercontent.com/selvaggi/GridPackProducer/master/MG5_aMCatNLO/patches/lhapdfFlags/makefile
+  #wget https://raw.githubusercontent.com/selvaggi/GridPackProducer/master/MG5_aMCatNLO/patches/Flags/makefile
   #mv makefile Template/LO/SubProcesses/
-  cp /afs/cern.ch/work/s/selvaggi/public/LHAPDF-6.1.6/build/makefile Template/LO/SubProcesses/
+  cp $PRODHOME/patches/lhapdfFlags/makefile Template/LO/SubProcesses/
   LHAPDFCONFIG=/afs/cern.ch/work/s/selvaggi/public/LHAPDF-6.1.6/build/bin/lhapdf-config
   #make sure env variable forexit pdfsets points to the right place
   #export LHAPDF_DATA_PATH=/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/
@@ -163,7 +172,6 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
       echo "set cluster_status_update 60 30" >> mgconfigscript
       echo "set cluster_nb_retry 3" >> mgconfigscript
       echo "set cluster_retry_wait 300" >> mgconfigscript 
-      echo "display options" >> mgconfigscript 
       
       echo "set cluster_local_path $LHAPDF_DATA_PATH" >> mgconfigscript 
       if [[ ! "$RUNHOME" =~ ^/afs/.* ]]; then
@@ -241,6 +249,8 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   ########################
   #Locating the proc card#
   ########################
+
+ 
   if [ ! -e $CARDSDIR/proc_card.dat ]; then
     echo $CARDSDIR/proc_card.dat " does not exist!"
     if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi
@@ -261,6 +271,7 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
 
   ./$MGBASEDIRORIG/bin/mg5_aMC proc_card.dat
 
+#   echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt    
   #*FIXME* workaround for broken set cluster_queue handling (only needed for LSF)
   if [ "$queue" != "condor" ]; then
     echo "cluster_queue = $queue" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
@@ -268,8 +279,6 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   if [ "$isscratchspace" -gt "0" ]; then
     echo "cluster_temp_path = `echo $RUNHOME`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt
   fi
-#   echo "cluster_local_path = `${LHAPDFCONFIG} --datadir`" >> ./$MGBASEDIRORIG/input/mg5_configuration.txt    
-  
   if [ -e $CARDSDIR/patch_me.sh ]; then
       echo "Patching generated matrix element code with " $CARDSDIR/patch_me.sh
       /bin/bash "$CARDSDIR/patch_me.sh" "$WORKDIR/$MGBASEDIRORIG"
@@ -507,10 +516,18 @@ else
 
   cd gridpack
   
+  # add correct gcc environment for running gridpack
+  sed -i '2s#^#source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/gcc/4.9.3/x86_64-slc6/setup.sh\n#' process/run.sh
+  
 fi
+
 
 #clean unneeded files for generation
 $PRODHOME/cleangridpack.sh
+
+#remove process dir 
+
+
 
 #
 #Plan to decay events from external tarball?
@@ -544,6 +561,11 @@ else
 fi
 
 mv ${name}.tar.gz ${PRODHOME}/${name}.tar.gz
+
+#remove process dir 
+echo "Removing process directory ..."
+rm -rf ${PRODHOME}/${name}
+
 
 echo "Gridpack created successfully at ${PRODHOME}/${name}.tar.gz"
 echo "End of job"
