@@ -132,7 +132,6 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   cp $PRODHOME/patches/mg5patches/mgfixes.patch .
   sed -i 's/MG5_aMC_v2_3_3/${MGBASEDIRORIG}/g' mgfixes.patch
   patch -l -p0 -i mgfixes.patch
-  patch -l -p0 -i $PRODHOME/patches/models.patch
 
   ################################
   # Prepare MG input parameters 
