@@ -181,7 +181,7 @@
 #*********************************************************************
 # Minimum and maximum invariant mass for all letpons                 *
 #*********************************************************************
- 0.0   = mmnl    ! min invariant mass for all letpons (l+- and vl) 
+ 20.0   = mmnl    ! min invariant mass for all letpons (l+- and vl) 
  -1.0  = mmnlmax ! max invariant mass for all letpons (l+- and vl) 
 #*********************************************************************
 # Minimum and maximum pt for 4-momenta sum of leptons                *

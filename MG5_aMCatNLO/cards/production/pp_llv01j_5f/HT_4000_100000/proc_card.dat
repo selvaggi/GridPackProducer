@@ -35,7 +35,7 @@ define l+ = e+ mu+
 define l- = e- mu-
 define vl = ve vm vt
 define vl~ = ve~ vm~ vt~
-import model sm-no_b_mass
+import model sm-lepton_masses_no_b_mass
 define p = 21 2 4 1 3 -2 -4 -1 -3 5 -5 # pass to 5 flavors
 define j = p
 # Define background group multiparticles
