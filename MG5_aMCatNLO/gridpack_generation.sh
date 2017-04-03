@@ -85,13 +85,13 @@ CARDSDIR=${PRODHOME}/${carddir}
 
 MGBASEDIR=mgbasedir
 
-MG=MG5_aMC_v2.5.3.tar.gz
+MG=MG5_aMC_v2.5.4.tar.gz
 MGSOURCE=https://launchpad.net/mg5amcnlo/2.0/2.5.x/+download/$MG
 #syscalc is a helper tool for madgraph to add scale and pdf variation weights for LO processes
 SYSCALC=SysCalc_V1.1.6.tar.gz
 SYSCALCSOURCE=https://cms-project-generators.web.cern.ch/cms-project-generators/$SYSCALC
 
-MGBASEDIRORIG=MG5_aMC_v2_5_3
+MGBASEDIRORIG=MG5_aMC_v2_5_4
 
 isscratchspace=0
 
@@ -132,6 +132,9 @@ if [ ! -d ${AFS_GEN_FOLDER}/${name}_gridpack ]; then
   cp $PRODHOME/patches/mg5patches/mgfixes.patch .
   sed -i 's/MG5_aMC_v2_3_3/${MGBASEDIRORIG}/g' mgfixes.patch
   patch -l -p0 -i mgfixes.patch
+
+  # add model with lepton mass and vanishing b mass
+  cp $PRODHOME/patches/mg5patches/restrict_lepton_masses_no_b_mass.dat $MGBASEDIRORIG/models/sm
 
   ################################
   # Prepare MG input parameters 
@@ -523,10 +526,6 @@ fi
 
 #clean unneeded files for generation
 $PRODHOME/cleangridpack.sh
-
-#remove process dir 
-
-
 
 #
 #Plan to decay events from external tarball?
