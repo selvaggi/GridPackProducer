@@ -18,5 +18,6 @@
 "gg_aa01j_5f":[["gluon fusion di-photon + 0/1 jets", "inclusive", "xqcut = 20, qCut = 30"],0,500,1000,2000,4000,7200,100000],
 "pp_aa012j_5f":[["di-photon + 0/1/2 jets", "inclusive", "xqcut = 20, qCut = 30"],0,500,1000,2000,4000,7200,100000],
 "pp_aj012j_5f":[["photon + jet + 0/1/2 jets", "inclusive", "xqcut = 20, qCut = 30"],0,500,1000,2000,4000,7200,100000],
-"pp_jj012j_5f":[["di-jet + 0/1/2 jets", "inclusive", "xqcut = 20, qCut = 30"],0,500,1000,2000,4000,7200,100000]
+"pp_jj012j_5f":[["di-jet + 0/1/2 jets", "inclusive", "xqcut = 20, qCut = 30"],0,500,1000,2000,4000,7200,100000],
+"pp_llll01j_5f":[["Z/gamma* Z/gamma* to 4l + 0/1 jets","inclusive","xqcut = 40, qCut = 60"],0,800,2000,4000,100000]
 }
