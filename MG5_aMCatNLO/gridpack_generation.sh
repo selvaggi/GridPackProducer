@@ -90,13 +90,13 @@ CARDSDIR=${PRODHOME}/${carddir}
 
 MGBASEDIR=mgbasedir
 
-MG=MG5_aMC_v2.5.4.tar.gz
+MG=MG5_aMC_v2.5.5.tar.gz
 MGSOURCE=https://launchpad.net/mg5amcnlo/2.0/2.5.x/+download/$MG
 #syscalc is a helper tool for madgraph to add scale and pdf variation weights for LO processes
 SYSCALC=SysCalc_V1.1.6.tar.gz
 SYSCALCSOURCE=https://cms-project-generators.web.cern.ch/cms-project-generators/$SYSCALC
 
-MGBASEDIRORIG=MG5_aMC_v2_5_4
+MGBASEDIRORIG=MG5_aMC_v2_5_5
 
 isscratchspace=0
 
@@ -372,6 +372,11 @@ if [ -e $CARDSDIR/cuts.f ]; then
   cp $CARDSDIR/cuts.f ./SubProcesses/cuts.f
 fi
 
+if [ -e $CARDSDIR/setcuts.f ]; then
+  echo "copying custom setcuts.f file"
+  cp $CARDSDIR/setcuts.f ./SubProcesses/setcuts.f
+fi
+
 if [ -e $CARDSDIR/FKS_params.dat ]; then
   echo "copying custom FKS_params.dat file"
   cp $CARDSDIR/FKS_params.dat ./Cards/FKS_params.dat
@@ -404,7 +409,9 @@ if [ "$isnlo" -gt "0" ]; then
   #######################
   #Run the integration and generate the grid
   #######################
-
+  
+  echo "starting NLO mode"
+  
   if [ -e $CARDSDIR/madspin_card.dat ]; then
     cp $CARDSDIR/madspin_card.dat ./Cards/madspin_card.dat
   fi
@@ -415,7 +422,6 @@ if [ "$isnlo" -gt "0" ]; then
           cat $CARDSDIR/customizecards.dat >> makegrid.dat
           echo "" >> makegrid.dat
   fi
-  echo "done" >> makegrid.dat
 
   cat makegrid.dat | ./bin/generate_events -n pilotrun
 
@@ -438,17 +444,26 @@ if [ "$isnlo" -gt "0" ]; then
 
   cp -a $MGBASEDIRORIG/ gridpack/mgbasedir
   
-  cd gridpack
+  cd gridpack/process
+
+  cp $PRODHOME/run_nlo.sh run.sh
+  
+  cp $PRODHOME/patches/mg5patches/fixpaths.py .
+  python fixpaths.py
+
   
   if [ -e $CARDSDIR/externaltarball.dat ]; then
     mv $WORKDIR/header_for_madspin.txt . 
   fi
   
-else
+  cd ..
+  
+else 
   #LO mode
   #######################
   #Run the integration and generate the grid
   #######################
+  echo "starting LO mode"  
   
   echo "done" > makegrid.dat
   echo "set gridpack True" >> makegrid.dat
@@ -567,7 +582,7 @@ mv ${name}.tar.gz ${PRODHOME}/${name}.tar.gz
 
 #remove process dir 
 echo "Removing process directory ..."
-rm -rf ${PRODHOME}/${name}
+#rm -rf ${PRODHOME}/${name}
 
 
 echo "Gridpack created successfully at ${PRODHOME}/${name}.tar.gz"
