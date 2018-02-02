@@ -34,5 +34,5 @@ define l+ = e+ mu+
 define l- = e- mu-
 define vl = ve vm vt
 define vl~ = ve~ vm~ vt~
-process p p > h h j j
+generate p p > h h j j
 add process p p > h h j j j
