@@ -1,6 +1,6 @@
-diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/madgraph/interface/reweight_interface.py MG5_aMC_v2_5_4/madgraph/interface/reweight_interface.py
---- ../old/MG5_aMC_v2_5_4/madgraph/interface/reweight_interface.py	2015-10-26 02:18:52.000000001 +0100
-+++ MG5_aMC_v2_5_4/madgraph/interface/reweight_interface.py	2015-11-18 20:27:57.000000001 +0100
+diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_5/madgraph/interface/reweight_interface.py MG5_aMC_v2_5_5/madgraph/interface/reweight_interface.py
+--- ../old/MG5_aMC_v2_5_5/madgraph/interface/reweight_interface.py	2015-10-26 02:18:52.000000001 +0100
++++ MG5_aMC_v2_5_5/madgraph/interface/reweight_interface.py	2015-11-18 20:27:57.000000001 +0100
 @@ -782,7 +782,8 @@
                      os.remove(pjoin(Pdir, 'matrix%spy.so' % newtag))
                      newtag  = "L%s" % newtag
@@ -21,9 +21,9 @@ diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/madgraph/interface/reweight_int
                  mymod = __import__("rw_me_second.SubProcesses.%s.matrix%spy" % (Pname, metag))
              reload(mymod)
              S = mymod.SubProcesses
-diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/madgraph/various/cluster.py MG5_aMC_v2_5_4/madgraph/various/cluster.py
---- ../old/MG5_aMC_v2_5_4/madgraph/various/cluster.py	2015-10-26 02:18:52.000000001 +0100
-+++ MG5_aMC_v2_5_4/madgraph/various/cluster.py	2015-12-11 15:13:21.000000001 +0100
+diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_5/madgraph/various/cluster.py MG5_aMC_v2_5_5/madgraph/various/cluster.py
+--- ../old/MG5_aMC_v2_5_5/madgraph/various/cluster.py	2015-10-26 02:18:52.000000001 +0100
++++ MG5_aMC_v2_5_5/madgraph/various/cluster.py	2015-12-11 15:13:21.000000001 +0100
 @@ -19,6 +19,11 @@
  import glob
  import inspect
@@ -388,9 +388,9 @@ diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/madgraph/various/cluster.py MG5
  
          return idle, run, self.submitted - (idle+run+fail), fail
  
-diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/MadSpin/interface_madspin.py MG5_aMC_v2_5_4/MadSpin/interface_madspin.py
---- ../old/MG5_aMC_v2_5_4/MadSpin/interface_madspin.py	2015-10-26 02:18:52.000000001 +0100
-+++ MG5_aMC_v2_5_4/MadSpin/interface_madspin.py	2015-11-19 22:44:54.000000001 +0100
+diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_5/MadSpin/interface_madspin.py MG5_aMC_v2_5_5/MadSpin/interface_madspin.py
+--- ../old/MG5_aMC_v2_5_5/MadSpin/interface_madspin.py	2015-10-26 02:18:52.000000001 +0100
++++ MG5_aMC_v2_5_5/MadSpin/interface_madspin.py	2015-11-19 22:44:54.000000001 +0100
 @@ -693,24 +693,56 @@
                      else:
                          mg5.exec_cmd("generate %s" % proc)
@@ -476,15 +476,15 @@ diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/MadSpin/interface_madspin.py MG
              self.seed = random.randint(0, int(30081*30081))
              self.do_set('seed %s' % self.seed)
              logger.info('Will use seed %s' % self.seed)
-Only in MG5_aMC_v2_5_4/models/loop_qcd_qed_sm: restrict_lepton_masses_no_lepton_yukawas.dat
-Only in MG5_aMC_v2_5_4/models/loop_sm: restrict_ckm_no_b_mass.dat
-Only in MG5_aMC_v2_5_4/models/sm: restrict_ckm_lepton_masses.dat
-Only in MG5_aMC_v2_5_4/models/sm: restrict_ckm_lepton_masses_no_b_mass.dat
-Only in MG5_aMC_v2_5_4/models/sm: restrict_ckm_no_b_mass.dat
-Only in MG5_aMC_v2_5_4/models/sm: restrict_lepton_masses_no_b_mass.dat
-diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/Template/LO/bin/internal/Gridpack/run.sh MG5_aMC_v2_5_4/Template/LO/bin/internal/Gridpack/run.sh
---- ../old/MG5_aMC_v2_5_4/Template/LO/bin/internal/Gridpack/run.sh	2015-10-26 02:18:52.000000001 +0100
-+++ MG5_aMC_v2_5_4/Template/LO/bin/internal/Gridpack/run.sh	2015-11-18 17:21:02.000000001 +0100
+Only in MG5_aMC_v2_5_5/models/loop_qcd_qed_sm: restrict_lepton_masses_no_lepton_yukawas.dat
+Only in MG5_aMC_v2_5_5/models/loop_sm: restrict_ckm_no_b_mass.dat
+Only in MG5_aMC_v2_5_5/models/sm: restrict_ckm_lepton_masses.dat
+Only in MG5_aMC_v2_5_5/models/sm: restrict_ckm_lepton_masses_no_b_mass.dat
+Only in MG5_aMC_v2_5_5/models/sm: restrict_ckm_no_b_mass.dat
+Only in MG5_aMC_v2_5_5/models/sm: restrict_lepton_masses_no_b_mass.dat
+diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_5/Template/LO/bin/internal/Gridpack/run.sh MG5_aMC_v2_5_5/Template/LO/bin/internal/Gridpack/run.sh
+--- ../old/MG5_aMC_v2_5_5/Template/LO/bin/internal/Gridpack/run.sh	2015-10-26 02:18:52.000000001 +0100
++++ MG5_aMC_v2_5_5/Template/LO/bin/internal/Gridpack/run.sh	2015-11-18 17:21:02.000000001 +0100
 @@ -78,43 +78,5 @@
      cd ..
  fi
@@ -529,9 +529,9 @@ diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/Template/LO/bin/internal/Gridpa
 -
  gzip -f events.lhe
  exit
-diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/Template/NLO/SubProcesses/MCmasses_PYTHIA8.inc MG5_aMC_v2_5_4/Template/NLO/SubProcesses/MCmasses_PYTHIA8.inc
---- ../old/MG5_aMC_v2_5_4/Template/NLO/SubProcesses/MCmasses_PYTHIA8.inc	2015-10-26 02:18:52.000000001 +0100
-+++ MG5_aMC_v2_5_4/Template/NLO/SubProcesses/MCmasses_PYTHIA8.inc	2015-11-18 16:58:52.000000001 +0100
+diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_5/Template/NLO/SubProcesses/MCmasses_PYTHIA8.inc MG5_aMC_v2_5_5/Template/NLO/SubProcesses/MCmasses_PYTHIA8.inc
+--- ../old/MG5_aMC_v2_5_5/Template/NLO/SubProcesses/MCmasses_PYTHIA8.inc	2015-10-26 02:18:52.000000001 +0100
++++ MG5_aMC_v2_5_5/Template/NLO/SubProcesses/MCmasses_PYTHIA8.inc	2015-11-18 16:58:52.000000001 +0100
 @@ -1,12 +1,12 @@
 -      mcmass(1)=0.33d0
 -      mcmass(2)=0.33d0
@@ -556,9 +556,9 @@ diff -ur -x '.*/models/.*' ../old/MG5_aMC_v2_5_4/Template/NLO/SubProcesses/MCmas
 +      mcmass(15)=0.0d0
 +      mcmass(16)=0.0d0
        mcmass(21)=0.0d0
-diff -ur ../old/MG5_aMC_v2_5_4/madgraph/interface/madgraph_interface.py MG5_aMC_v2_3_2_2/madgraph/interface/madgraph_interface.py
---- ../old/MG5_aMC_v2_5_4/madgraph/interface/madgraph_interface.py       2015-09-07 20:07:39.000000000 +0200
-+++ MG5_aMC_v2_5_4/madgraph/interface/madgraph_interface.py    2015-11-17 10:50:56.985751642 +0100
+diff -ur ../old/MG5_aMC_v2_5_5/madgraph/interface/madgraph_interface.py MG5_aMC_v2_3_2_2/madgraph/interface/madgraph_interface.py
+--- ../old/MG5_aMC_v2_5_5/madgraph/interface/madgraph_interface.py       2015-09-07 20:07:39.000000000 +0200
++++ MG5_aMC_v2_5_5/madgraph/interface/madgraph_interface.py    2015-11-17 10:50:56.985751642 +0100
 @@ -5851,6 +5851,9 @@
          elif args[0] in ['cluster_local_path']:
              self.options[args[0]] = args[1].strip()
