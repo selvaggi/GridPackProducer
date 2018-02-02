@@ -25,10 +25,10 @@ def writecards(binning, indir):
             os.system(cmd)
 
           for line in xrange(len(infile)):
-            if 'ihtmin' in infile[line] :
-                infile[line]='%.1f = ihtmin  !inclusive Ht for all partons (including b)\n'%(binning[i])
-            if 'ihtmax' in infile[line]:
-                infile[line]='%.1f = ihtmax  !inclusive Ht for all partons (including b)\n'%(binning[i+1])
+            if 'htjmin' in infile[line] :
+                infile[line]='%.1f = htjmin  !inclusive Ht for all partons (including b)\n'%(binning[i])
+            if 'htjmax' in infile[line]:
+                infile[line]='%.1f = htjmax  !inclusive Ht for all partons (including b)\n'%(binning[i+1])
           with open("%sHT_%i_%i/run_card.dat"%(indir,binning[i],binning[i+1]), "w") as f1:
             f1.writelines(infile)        
 
@@ -39,13 +39,14 @@ def launchProcess(process, binning, indir, queue):
      
      htdir="%sHT_%i_%i"%(indir,binning[i],binning[i+1])
      procht="{0}_HT_{1}_{2}".format(process, binning[i],binning[i+1])
-     cmd="./gridpack_generation.sh {0} {1} {2}".format(procht, htdir, queue)
-     #cmd="./submit_gridpack_generation.sh 15000 15000 1nd {0} {1} {2}".format(procht, htdir, queue)
+     #cmd="./gridpack_generation.sh {0} {1} {2}".format(procht, htdir, queue)
+     cmd="./submit_gridpack_generation.sh 50000 50000 2nw {0} {1} {2}".format(procht, htdir, queue)
      print cmd
      os.system(cmd)
 
 
 def checkJobs(process, binning, queue):
+    
    
    desc = binning[0][0]
    decay = binning[0][1]
@@ -53,6 +54,8 @@ def checkJobs(process, binning, queue):
    kf = binning[0][3]
    
    stdouts = glob.glob('LSF*/STDOUT')
+   #stdouts = glob.glob('gp_bk2/LSF*/STDOUT')
+   #stdouts += glob.glob('gp_bk2/*.log')
    #logs = glob.glob('*.log')
    #logs2 = glob.glob('logs/*.log')
    #logs3 = glob.glob('logs/LSF*/STDOUT')
@@ -80,31 +83,33 @@ def checkJobs(process, binning, queue):
        #lhejf.write("sleep 3h\n")
        #lhejf.write("eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht, procht))
        lhejf.write("{}\n".format(procht))
-       cpeos.write("eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht, procht))
+       cpeos.write("cp {}.tar.gz /eos/experiment/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht, procht))
        #cpeos.write("eos cp /eos/fcc/hh/pythiacards/pythia_{}.cmd /eos/fcc/hh/pythiacards/pythia_{}.cmd\n".format(procht, procht))
        data = {}
        for log in logs:
 	 if os.path.exists(log) and 'Done' in open(log).read() and procht in open(log).read():
-	   found=True
+	   #found=True
 	   with open(log) as f:
              for line in f:
                if line.find('Cross-section'):
                  list_of_words = line.split()
                  if any("Cross-section" in s for s in list_of_words):
-                    found=True
+                    #found=True
                     xsec = list_of_words[2]
                     print '   cross-section: ', xsec
-                    data[procht] = ['', '', '', '', xsec, '']
-                    #if procht not in para.gridpacklist:
-                    jf.write("'{}':['{}','{} < HT < {}','{}','{}','{}','1.0'],\n".format(procht,desc,binning[i],binning[i+1],match,xsec,kf))
-                    #os.system('eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz'.format(procht, procht))
-                    #lhejf.write("python sendJobs.py -n 100 -e 10000 -q 2nw -p {}\n".format(procht))
+                    if xsec != 'nan' and xsec != '0':
+                       found = True
+                       data[procht] = ['', '', '', '', xsec, '']
+                       #if procht not in para.gridpacklist:
+                       jf.write("'{}':['{}','{} < HT < {}','{}','{}','{}','1.0'],\n".format(procht,desc,binning[i],binning[i+1],match,xsec,kf))
+                       #os.system('eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz'.format(procht, procht))
+                       #lhejf.write("python sendJobs.py -n 100 -e 10000 -q 2nw -p {}\n".format(procht))
 
      
      
      
      if not found:
-       cmd="./submit_gridpack_generation.sh 50000 50000 2nw {0} {1} {2}".format(procht, htdir, queue)
+       cmd="./submit_gridpack_generation.sh 30000 30000 2nw {0} {1} {2}".format(procht, htdir, queue)
        print '   ... did not find cross section, resubmitting job...'
        print cmd
        os.system(cmd)
@@ -133,25 +138,27 @@ def checkJobsNoBinning(process, binning, queue):
    print 'Checking process ...', procht
        
    #with open('param.py', 'a') as jf, open('copyCards.sh', 'a') as cpeos :
-   with open('param.py', 'a') as jf:
+   with open('param.py', 'a') as jf, open('process_list.txt', 'a') as lhejf, open('copyall.sh', 'a') as cpeos :
      #cpeos.write("eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht, procht))
      #cpeos.write("eos cp /eos/fcc/hh/pythiacards/pythia_{}.cmd /eos/fcc/hh/pythiacards/pythia_{}.cmd\n".format(procht, procht))
+     cpeos.write("cp {}.tar.gz /eos/experiment/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht, procht))
      data = {}
      for log in logs:
        if os.path.exists(log) and 'Done' in open(log).read() and str(procht) in open(log).read() and '_HT_' not in open(log).read():
-         found=True
+         #found=True
          with open(log) as f:
            for line in f:
              if line.find('Cross-section'):
                list_of_words = line.split()
                if any("Cross-section" in s for s in list_of_words):
-                  found=True
                   xsec = list_of_words[2]
                   print '   cross-section: ', xsec
-                  data[procht] = ['', '', '', '', xsec, '']
-                  #json.dump(data, jf)
-                  jf.write("'{}':['{}','inclusive','{}','{}','{}','1.0'],\n".format(procht,desc,match,xsec,kf))
-                  #os.system('eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz'.format(procht, procht))
+                  if xsec != 'nan' and xsec != '0':
+                      found = True
+                      data[procht] = ['', '', '', '', xsec, '']
+                      #json.dump(data, jf)
+                      jf.write("'{}':['{}','inclusive','{}','{}','{}','1.0'],\n".format(procht,desc,match,xsec,kf))
+                      #os.system('eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz'.format(procht, procht))
 
 
    if not found:

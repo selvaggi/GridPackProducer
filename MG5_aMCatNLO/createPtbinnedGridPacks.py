@@ -9,27 +9,27 @@ def writecards(binning, indir):
     with open(incard) as f:
         infile = f.readlines()
         for i in xrange(1,len(binning)-1):
-          if os.path.isdir("%sHT_%i_%i"%(indir,binning[i],binning[i+1]))==False:
-            cmd="mkdir %sHT_%i_%i"%(indir,binning[i],binning[i+1])
+          if os.path.isdir("%sPT_%i_%i"%(indir,binning[i],binning[i+1]))==False:
+            cmd="mkdir %sPT_%i_%i"%(indir,binning[i],binning[i+1])
             os.system(cmd)
-            cmd='cp %sproc_card.dat %sHT_%i_%i'%(indir,indir,binning[i],binning[i+1])
+            cmd='cp %sproc_card.dat %sPT_%i_%i'%(indir,indir,binning[i],binning[i+1])
             os.system(cmd)
           if os.path.isfile('%scuts.f'%(indir)):
-            cmd='cp %scuts.f %sHT_%i_%i'%(indir,indir,binning[i],binning[i+1])
+            cmd='cp %scuts.f %sPT_%i_%i'%(indir,indir,binning[i],binning[i+1])
             os.system(cmd)
           if os.path.isfile('%scustomizecards.f'%(indir)):
-            cmd='cp %scuts.f %sHT_%i_%i'%(indir,indir,binning[i],binning[i+1])
+            cmd='cp %scuts.f %sPT_%i_%i'%(indir,indir,binning[i],binning[i+1])
             os.system(cmd)
           if os.path.isfile('%sextramodels.f'%(indir)):
-            cmd='cp %scuts.f %sHT_%i_%i'%(indir,indir,binning[i],binning[i+1])
+            cmd='cp %scuts.f %sPT_%i_%i'%(indir,indir,binning[i],binning[i+1])
             os.system(cmd)
 
           for line in xrange(len(infile)):
-            if 'ihtmin' in infile[line] :
-                infile[line]='%.1f = ihtmin  !inclusive Ht for all partons (including b)\n'%(binning[i])
-            if 'ihtmax' in infile[line]:
-                infile[line]='%.1f = ihtmax  !inclusive Ht for all partons (including b)\n'%(binning[i+1])
-          with open("%sHT_%i_%i/run_card.dat"%(indir,binning[i],binning[i+1]), "w") as f1:
+            if 'minimum pt for the jets' in infile[line] :
+                infile[line]='%.1f = ptj  !minimum pt for the jets\n'%(binning[i])
+            if 'maximum pt for the jets' in infile[line]:
+                infile[line]='%.1f = ptjmax  !maximum pt for the jets\n'%(binning[i+1])
+          with open("%sPT_%i_%i/run_card.dat"%(indir,binning[i],binning[i+1]), "w") as f1:
             f1.writelines(infile)        
 
 
@@ -37,8 +37,8 @@ def launchProcess(process, binning, indir, queue):
     
    for i in xrange(1,len(binning)-1):
      
-     htdir="%sHT_%i_%i"%(indir,binning[i],binning[i+1])
-     procht="{0}_HT_{1}_{2}".format(process, binning[i],binning[i+1])
+     htdir="%sPT_%i_%i"%(indir,binning[i],binning[i+1])
+     procht="{0}_PT_{1}_{2}".format(process, binning[i],binning[i+1])
      cmd="./gridpack_generation.sh {0} {1} {2}".format(procht, htdir, queue)
      #cmd="./submit_gridpack_generation.sh 15000 15000 1nd {0} {1} {2}".format(procht, htdir, queue)
      print cmd
@@ -46,6 +46,7 @@ def launchProcess(process, binning, indir, queue):
 
 
 def checkJobs(process, binning, queue):
+    
    
    desc = binning[0][0]
    decay = binning[0][1]
@@ -64,8 +65,8 @@ def checkJobs(process, binning, queue):
    
    for i in xrange(1,len(binning)-1):
      indir="cards/production/{0}/".format(process) 
-     htdir="%sHT_%i_%i"%(indir,binning[i],binning[i+1])
-     procht="{0}_HT_{1}_{2}".format(process, binning[i],binning[i+1])
+     htdir="%sPT_%i_%i"%(indir,binning[i],binning[i+1])
+     procht="{0}_PT_{1}_{2}".format(process, binning[i],binning[i+1])
      found = False
      print '----------------------------------------------------'
      print 'Checking process ...', procht
@@ -73,14 +74,14 @@ def checkJobs(process, binning, queue):
      #with open('param.py', 'a') as jf, open('process_list.txt', 'a') as lhejf, open('copyCards.sh', 'a') as cpeos :
      with open('param.py', 'a') as jf, open('process_list.txt', 'a') as lhejf, open('copyall.sh', 'a') as cpeos :
      
-       #lhejf.write("python sendJobs.py -n 500 -e 10000 -q 2nd -p {}\n".format(procht))
+       lhejf.write("python sendJobs.py -n 100 -e 10000 -q 1nd -p {}\n".format(procht))
        #lhejf.write("sleep 3h\n")
        #lhejf.write("eos ls /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht))
        #lhejf.write("ls {}.tar.gz\n".format(procht))
        #lhejf.write("sleep 3h\n")
        #lhejf.write("eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht, procht))
-       lhejf.write("{}\n".format(procht))
-       cpeos.write("eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht, procht))
+       #lhejf.write("{}\n".format(procht))
+       #cpeos.write("cp {}.tar.gz /eos/experiment/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht, procht))
        #cpeos.write("eos cp /eos/fcc/hh/pythiacards/pythia_{}.cmd /eos/fcc/hh/pythiacards/pythia_{}.cmd\n".format(procht, procht))
        data = {}
        for log in logs:
@@ -96,13 +97,11 @@ def checkJobs(process, binning, queue):
                     print '   cross-section: ', xsec
                     data[procht] = ['', '', '', '', xsec, '']
                     #if procht not in para.gridpacklist:
-                    jf.write("'{}':['{}','{} < HT < {}','{}','{}','{}','1.0'],\n".format(procht,desc,binning[i],binning[i+1],match,xsec,kf))
-                    #os.system('eos cp {}.tar.gz /eos/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz'.format(procht, procht))
+                    jf.write("'{}':['{}','{} < PT < {}','{}','{}','{}','1.0'],\n".format(procht,desc,binning[i],binning[i+1],match,xsec,kf))
+                    cpeos.write("cp {}.tar.gz /eos/experiment/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz\n".format(procht, procht))
                     #lhejf.write("python sendJobs.py -n 100 -e 10000 -q 2nw -p {}\n".format(procht))
 
-     
-     
-     
+
      if not found:
        cmd="./submit_gridpack_generation.sh 50000 50000 2nw {0} {1} {2}".format(procht, htdir, queue)
        print '   ... did not find cross section, resubmitting job...'
@@ -138,7 +137,7 @@ def checkJobsNoBinning(process, binning, queue):
      #cpeos.write("eos cp /eos/fcc/hh/pythiacards/pythia_{}.cmd /eos/fcc/hh/pythiacards/pythia_{}.cmd\n".format(procht, procht))
      data = {}
      for log in logs:
-       if os.path.exists(log) and 'Done' in open(log).read() and str(procht) in open(log).read() and '_HT_' not in open(log).read():
+       if os.path.exists(log) and 'Done' in open(log).read() and str(procht) in open(log).read() and '_PT_' not in open(log).read():
          found=True
          with open(log) as f:
            for line in f:
