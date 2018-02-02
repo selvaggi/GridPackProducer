@@ -582,7 +582,7 @@ mv ${name}.tar.gz ${PRODHOME}/${name}.tar.gz
 
 #remove process dir 
 echo "Removing process directory ..."
-#rm -rf ${PRODHOME}/${name}
+rm -rf ${PRODHOME}/${name}
 
 
 echo "Gridpack created successfully at ${PRODHOME}/${name}.tar.gz"

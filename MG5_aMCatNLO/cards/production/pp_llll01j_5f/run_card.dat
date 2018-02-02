@@ -111,8 +111,8 @@
 #*********************************************************************
  5.0  = ptj       ! minimum pt for the jets 
  5.0  = ptb       ! minimum pt for the b 
- 5.0  = pta       ! minimum pt for the photons 
- 5.0  = ptl       ! minimum pt for the charged leptons 
+ 10.0  = pta       ! minimum pt for the photons 
+ 4.0  = ptl       ! minimum pt for the charged leptons 
  0.0  = misset    ! minimum missing Et (sum of neutrino's momenta)
  0.0  = ptheavy   ! minimum pt for one heavy final state
  -1.0  = ptjmax    ! maximum pt for the jets
@@ -134,10 +134,10 @@
 #*********************************************************************
 # Maximum and minimum absolute rapidity (for max, -1 means no cut)   *
 #*********************************************************************
- 8.0 = etaj    ! max rap for the jets 
+ 5.0 = etaj    ! max rap for the jets 
  8.0 = etab    ! max rap for the b
- 8.0 = etaa    ! max rap for the photons 
- 8.0 = etal    ! max rap for the charged leptons 
+ 4.0 = etaa    ! max rap for the photons 
+ 4.0 = etal    ! max rap for the charged leptons 
  0.0 = etajmin ! min rap for the jets
  0.0 = etabmin ! min rap for the b
  0.0 = etaamin ! min rap for the photons
@@ -170,14 +170,14 @@
 # WARNING: for four lepton final state mmll cut require to have      *
 #          different lepton masses for each flavor!                  *           
 #*********************************************************************
- 0.0   = mmjj    ! min invariant mass of a jet pair 
- 0.0   = mmbb    ! min invariant mass of a b pair 
- 0.0   = mmaa    ! min invariant mass of gamma gamma pair
- 20.0  = mmll    ! min invariant mass of l+l- (same flavour) lepton pair
- -1.0  = mmjjmax ! max invariant mass of a jet pair
- -1.0  = mmbbmax ! max invariant mass of a b pair
- -1.0  = mmaamax ! max invariant mass of gamma gamma pair
- -1.0  = mmllmax ! max invariant mass of l+l- (same flavour) lepton pair
+ 0.0    = mmjj    ! min invariant mass of a jet pair 
+ 0.0    = mmbb    ! min invariant mass of a b pair 
+ 100.0  = mmaa    ! min invariant mass of gamma gamma pair
+ 10.0   = mmll    ! min invariant mass of l+l- (same flavour) lepton pair
+ -1.0   = mmjjmax ! max invariant mass of a jet pair
+ -1.0   = mmbbmax ! max invariant mass of a b pair
+ 150.0  = mmaamax ! max invariant mass of gamma gamma pair
+ -1.0   = mmllmax ! max invariant mass of l+l- (same flavour) lepton pair
 #*********************************************************************
 # Minimum and maximum invariant mass for all letpons                 *
 #*********************************************************************
@@ -258,7 +258,7 @@
 # maximal pdg code for quark to be considered as a light jet         *
 # (otherwise b cuts are applied)                                     *
 #*********************************************************************
- 5 = maxjetflavor    ! Maximum jet pdg code
+ 4 = maxjetflavor    ! Maximum jet pdg code
 #*********************************************************************
 #
 #*********************************************************************
