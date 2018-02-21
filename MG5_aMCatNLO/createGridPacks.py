@@ -59,15 +59,16 @@ def writeOutput(process):
                if any("Cross-section" in s for s in list_of_words):
                   xsec = list_of_words[2]
                   print '   cross-section: ', xsec
-                  jf.write("'{}':['','inclusive','','{}','1.0','1.0'],\n".format(process,xsec))
+                  process_eos = 'mg_{}'.format(process)
+                  jf.write("'{}':['','inclusive','','{}','1.0','1.0'],\n".format(process_eos,xsec))
 
    #cmd = 'cp {}.tar.gz /eos/experiment/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz'.format(process, process)
   
    eoscpscript='/afs/cern.ch/work/h/helsens/public/FCCutils/eoscopy.py'
 
-
+   process_eos = '{}'.format(process)
    #cmd = 'cp {}.tar.gz /eos/experiment/fcc/helhc/generation/gridpacks/{}.tar.gz'.format(process, process)
-   cmd = 'python {} {}.tar.gz /eos/experiment/fcc/hh/generation/mg5_amcatnlo/gridpacks/{}.tar.gz'.format(eoscpscript, process, process)
+   cmd = 'python {} {}.tar.gz /eos/experiment/fcc/hh/generation/gridpacks/{}.tar.gz'.format(eoscpscript, process, process_eos)
    print cmd
    os.system(cmd)
 
@@ -89,7 +90,7 @@ if __name__=="__main__":
 
     parser.add_option ('--qd',  help='queue daughter',
                        dest='queue_daughter',
-                       default='1nd')
+                       default='')
    
     parser.add_option("-c","--collect", help="collects gridpacks and cross sections",
                       dest="collect", action="store_true", 
