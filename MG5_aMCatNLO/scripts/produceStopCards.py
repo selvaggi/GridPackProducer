@@ -68,12 +68,16 @@ def write_pythia_cards(templateCard, stop_masses, neutralino_masses):
     with open (templateCard, "r") as myfile:
         tempdata=myfile.readlines()
 
+
+    cpOnEos = open('{}/cpOnEos.sh'.format(output_dir), 'w')
+
     for m_stop in stop_masses:
 
         # here do full grid
         stop_str = '{}'.format(m_stop)
 
         proc_str = proc_name.replace('XXX',stop_str)
+        proc_str = proc_str.replace('mg_','')
 
         i = 0
         for m_neut in neutralino_masses:
@@ -96,17 +100,20 @@ def write_pythia_cards(templateCard, stop_masses, neutralino_masses):
             pythia_card.write(params)
 
             # copy cards on eos
-            cmd = 'python {} {} {}/{}'.format(eoscp, pythia_file, eosdest, card_name)
-
-            print cmd
-            os.system(cmd)
-
+            cmd = 'python {} {} {}/{}\n'.format(eoscp, pythia_file, eosdest, card_name)
+            cpOnEos.write(cmd)
+	    
+    print "pythia8 cards done ... To copy on eos, run:"
+    print ''
+    print '    source {}/cpOnEos.sh'.format(output_dir)
+    print ''
+    
 
 #___________________________________________
 
 templateCard = sys.argv[1]
 
-eosdest = '/eos/experiment/fcc/hh/utils/pythiacards/'
+eosdest = '/eos/experiment/fcc/hh/utils/pythiacards'
 eoscp = '/afs/cern.ch/work/h/helsens/public/FCCutils/eoscopy.py'
 
 proc_name = 'mg_pp_stopstop_5f_mStop_XXXTeV'
