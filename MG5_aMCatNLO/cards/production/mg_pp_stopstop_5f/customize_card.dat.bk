@@ -1,0 +1,68 @@
+set param_card mass 1000001 1000000.0
+set param_card mass 1000002 1000000.0
+set param_card mass 1000003 1000000.0
+set param_card mass 1000004 1000000.0
+set param_card mass 1000005 1000000.0
+set param_card mass 1000006 5000.0
+set param_card mass 2000001 1000000.0
+set param_card mass 2000002 1000000.0
+set param_card mass 2000003 1000000.0
+set param_card mass 2000004 1000000.0
+set param_card mass 2000005 1000000.0
+set param_card mass 2000006 1000000.0
+set param_card mass 1000021 1000000.0
+set param_card mass 1000022 1000000.0
+set param_card mass 1000023 1000000.0
+set param_card mass 1000024 1000000.0
+set param_card mass 1000025 1000000.0
+set param_card mass 1000035 1000000.0
+set param_card mass 1000037 1000000.0
+set param_card mass 1000039 1000000.0
+set param_card mass 1000011 1000000.0
+set param_card mass 1000012 1000000.0
+set param_card mass 1000013 1000000.0
+set param_card mass 1000014 1000000.0
+set param_card mass 1000015 1000000.0
+set param_card mass 1000016 1000000.0
+set param_card mass 2000011 1000000.0
+set param_card mass 2000013 1000000.0
+set param_card mass 2000015 1000000.0
+
+set param_card DECAY   1000001     0.00000000E+00 
+set param_card DECAY   2000001     0.00000000E+00 
+set param_card DECAY   1000002     0.00000000E+00 
+set param_card DECAY   2000002     0.00000000E+00 
+set param_card DECAY   1000003     0.00000000E+00 
+set param_card DECAY   2000003     0.00000000E+00 
+set param_card DECAY   1000004     0.00000000E+00 
+set param_card DECAY   2000004     0.00000000E+00 
+
+set param_card DECAY   1000005     0.00000000E+00 
+set param_card DECAY   2000005     0.00000000E+00 
+set param_card DECAY   1000006     1.00000000E+00 
+set param_card DECAY   2000006     0.00000000E+00 
+
+set param_card DECAY   1000011     0.00000000E+00 
+set param_card DECAY   2000011     0.00000000E+00 
+set param_card DECAY   1000012     0.00000000E+00 
+set param_card DECAY   1000013     0.00000000E+00 
+set param_card DECAY   2000013     0.00000000E+00 
+set param_card DECAY   1000014     0.00000000E+00 
+set param_card DECAY   1000015     0.00000000E+00 
+set param_card DECAY   2000015     0.00000000E+00 
+set param_card DECAY   1000016     0.00000000E+00 
+
+set param_card DECAY   1000021     0.00000000E+00 
+
+set param_card DECAY   1000022     0.00000000E+00 
+set param_card DECAY   1000023     0.00000000E+00 
+set param_card DECAY   1000024     0.00000000E+00 
+set param_card DECAY   1000025     0.00000000E+00 
+
+set param_card DECAY   1000035     0.00000000E+00 
+set param_card DECAY   1000037     0.00000000E+00 
+set param_card DECAY   1000039     0.00000000E+00 
+
+set param_card      0.00000000E+00    3     1000022        5         24   # needed to allow off-shell decays
+set param_card      1.00000000E+00    2     1000022        6      
+
